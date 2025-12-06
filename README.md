@@ -1,19 +1,21 @@
 # MyStudyCompanion (Expo / React Native)
 
-Offline-first EMSI timetable, alerts, and todo app using Google Sheets as a headless CMS. Supports deep links, caching via AsyncStorage, and (in dev builds) background polling with local notifications for current class and new alerts.
+Application mobile pour les étudiants de l'EMSI, conçue pour fonctionner hors ligne. Elle permet de consulter son emploi du temps, de recevoir des alertes et de gérer ses tâches. L'application utilise Google Sheets comme un CMS headless. Elle supporte les liens profonds (deep links), la mise en cache avec AsyncStorage, et (dans les builds de développement) des notifications en arrière-plan pour les cours actuels et les nouvelles alertes.
 
-## Features
-- Schedule & Alerts from Google Sheets (`opensheet.elk.sh`)
-- Offline cache fallback (AsyncStorage)
-- Dashboard with current session highlight + today’s classes
-- Full 5x4 schedule grid (Mon–Fri, 4 slots)
-- Alerts & Messages section (priority colors: red/orange/green)
-- Personal Todo list (local, persistent, add/edit/delete, mark done)
-- Shared Todo list (from the same Sheet `TODO` tab)
-- Deep linking (`mystudy://open?screen=Alerts&id=123`)
-- Background polling + local notifications (dev/build only; not supported in Expo Go)
+## Fonctionnalités
+- **Emploi du temps et Alertes** depuis Google Sheets (`opensheet.elk.sh`).
+- **Cache hors ligne** avec AsyncStorage.
+- **Tableau de bord** avec mise en évidence de la session en cours et des cours du jour.
+- **Grille d'emploi du temps** complète 5x4 (Lundi–Vendredi, 4 créneaux).
+- **Section Alertes & Messages** avec des couleurs de priorité (rouge/orange/vert).
+- **Liste de tâches personnelle** (locale, persistante, ajout/modification/suppression, marquer comme fait).
+- **Liste de tâches partagée** (depuis l'onglet `TODO` de la même feuille de calcul Google Sheets).
+- **Pomodoro Timer** pour aider à la concentration.
+- **Graphique de progression** de la liste de tâches sur le tableau de bord.
+- **Liens profonds** (`mystudy://open?screen=Alerts&id=123`).
+- **Notifications en arrière-plan** (uniquement pour les builds de développement, non supporté par Expo Go).
 
-## Project structure
+## Structure du projet
 ```
 App.js
 app.json
@@ -28,71 +30,72 @@ src/
   screens/ScheduleScreen.js
   screens/TodoScreen.js
   screens/SharedTodoScreen.js
+  screens/PomodoroScreen.js
   services/googleSheetsService.js
   storage/storageKeys.js
   utils/time.js
 assets/
 ```
 
-## Google Sheets setup
-Use one Sheet with three tabs:
-- `SCHEDULE` headers: `Day | StartTime | EndTime | Module | Professor | Room | Group | Notes`
-- `ALERTS` headers: `Id | Title | Message | Priority | ExpiresAt | CreatedAt | Link`
-  - Priority: `high` (red), `medium` (orange), `low` (green)
-  - Link example: `mystudy://open?screen=Alerts&id=1`
-- `TODO` (shared) headers: `Title | Course | DueAt | Priority | Duration` (Id optional)
+## Configuration de Google Sheets
+Utilisez une feuille de calcul Google Sheets avec trois onglets :
+- `SCHEDULE` avec les en-têtes : `Day | StartTime | EndTime | Module | Professor | Room | Group | Notes`
+- `ALERTS` avec les en-têtes : `Id | Title | Message | Priority | ExpiresAt | CreatedAt | Link`
+  - Priorité : `high` (rouge), `medium` (orange), `low` (vert)
+  - Exemple de lien : `mystudy://open?screen=Alerts&id=1`
+- `TODO` (partagé) avec les en-têtes : `Title | Course | DueAt | Priority | Duration` (Id optionnel)
 
-Share the sheet as “Anyone with the link – Viewer”.
+Partagez la feuille de calcul en mode "Tous les utilisateurs disposant du lien – Lecteur".
 
 ## Configuration
-Edit `src/services/googleSheetsService.js`:
-- `SHEET_ID`: set to your Google Sheet ID (same sheet for Schedule/Alerts/Shared Todo).
-- The code uses `https://opensheet.elk.sh/${SHEET_ID}/<TAB>`.
+Modifiez `src/services/googleSheetsService.js`:
+- `SHEET_ID`: à remplacer par l'ID de votre feuille de calcul Google Sheets (la même pour l'emploi du temps, les alertes et la liste de tâches partagée).
+- Le code utilise `https://opensheet.elk.sh/${SHEET_ID}/<ONGLET>`.
 
 ## Scripts
-- Install deps: `npm install`
-- Start (recommended): `npx expo start`
-- Start + clear cache: `npx expo start --clear`
-- Doctor check: `npx expo-doctor`
-- Dev build (for notifications/background): `eas build --profile development --platform android` (or ios), then `npx expo start --dev-client`
+- Installer les dépendances : `npm install`
+- Démarrer (recommandé) : `npx expo start`
+- Démarrer + vider le cache : `npx expo start --clear`
+- Vérifier la configuration : `npx expo-doctor`
+- Build de développement (pour les notifications/tâches de fond) : `eas build --profile development --platform android` (ou `ios`), puis `npx expo start --dev-client`
 
-## Running
+## Lancement
 1) `npm install`
-2) Set `SHEET_ID` in `src/services/googleSheetsService.js`
+2) Configurez `SHEET_ID` dans `src/services/googleSheetsService.js`
 3) `npx expo start`
-4) Open on device/simulator; pull-to-refresh on Dashboard to load data and cache for offline.
+4) Ouvrez sur un appareil/simulateur ; tirez pour rafraîchir sur le tableau de bord pour charger les données et mettre en cache pour une utilisation hors ligne.
 
-## Deep links
-- Scheme: `mystudy://`
-- Example: `mystudy://open?screen=Alerts&id=1`
-- Test on simulator:
-  - iOS: `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --ios`
-  - Android: `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --android`
+## Liens profonds (Deep links)
+- Schéma : `mystudy://`
+- Exemple : `mystudy://open?screen=Alerts&id=1`
+- Tester sur un simulateur :
+  - iOS : `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --ios`
+  - Android : `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --android`
 
-## Background polling & notifications
-- Implemented in `src/background/notificationsTask.js`
-- Polls Schedule/Alerts ~every 3 minutes (best effort, OS-controlled), sends local notification on current class change or new alert Id.
-- Requires notification permission and a dev/build client. **Expo Go does not support this.**
-- In Expo Go, the app logs a warning and skips background registration.
+## Notifications en arrière-plan
+- Implémenté dans `src/background/notificationsTask.js`
+- Interroge l'emploi du temps et les alertes toutes les ~3 minutes (au mieux, contrôlé par l'OS), envoie une notification locale lors d'un changement de cours actuel ou d'un nouvel ID d'alerte.
+- Nécessite l'autorisation de notification et un client de développement/build. **Expo Go ne supporte pas cette fonctionnalité.**
+- Dans Expo Go, l'application affiche un avertissement et ignore l'enregistrement des tâches de fond.
 
-## Offline behavior
-- Network fetch -> cache to AsyncStorage.
-- On failure, loads from cache (schedule, alerts, shared todos).
-- Personal todos are always local and persisted.
+## Comportement hors ligne
+- Récupération réseau -> mise en cache dans AsyncStorage.
+- En cas d'échec, charge depuis le cache (emploi du temps, alertes, tâches partagées).
+- Les tâches personnelles sont toujours locales et persistantes.
 
-## Testing & debug tips
-- Verify sheet JSON: `https://opensheet.elk.sh/<SHEET_ID>/SCHEDULE` (or ALERTS/TODO).
-- If lists are empty, check tab names/headers and sharing.
-- Use `npx expo-doctor` to catch config issues.
-- For cache reset, uninstall the app or clear AsyncStorage manually.
+## Conseils de test & débogage
+- Vérifiez le JSON de la feuille de calcul : `https://opensheet.elk.sh/<SHEET_ID>/SCHEDULE` (ou ALERTS/TODO).
+- Si les listes sont vides, vérifiez les noms des onglets/en-têtes et le partage.
+- Utilisez `npx expo-doctor` pour détecter les problèmes de configuration.
+- Pour réinitialiser le cache, désinstallez l'application ou videz AsyncStorage manuellement.
 
-## Deployment
-- Use EAS for production/dev builds:
-  - Install EAS: `npm i -g eas-cli`
-  - Configure `eas.json` (if needed) and run `eas build --platform android|ios`
-- Push to Git as usual; ensure `.expo/`, `node_modules/` are ignored (already in `.gitignore`).
+## Déploiement
+- Utilisez EAS pour les builds de production/développement :
+  - Installez EAS : `npm i -g eas-cli`
+  - Configurez `eas.json` (si nécessaire) et lancez `eas build --platform android|ios`
+- Poussez sur Git comme d'habitude ; assurez-vous que `.expo/`, `node_modules/` sont ignorés (déjà dans `.gitignore`).
 
-## Troubleshooting
-- “Background notifications limited in Expo Go”: build a dev client (`eas build --profile development`) and run with `npx expo start --dev-client`.
-- “Cannot fetch sheet”: check Sheet sharing and tab names; confirm `SHEET_ID`.
-- “Deep link doesn’t open app”: ensure scheme `mystudy` is in `app.json` and test via `npx uri-scheme`.
+## Dépannage
+- “Background notifications limited in Expo Go” : construisez un client de développement (`eas build --profile development`) and run with `npx expo start --dev-client`.
+- “Cannot fetch sheet” : vérifiez le partage de la feuille de calcul et les noms des onglets ; confirmez le `SHEET_ID`.
+- “Deep link doesn’t open app” : assurez-vous que le schéma `mystudy` est dans `app.json` et testez via `npx uri-scheme`.
