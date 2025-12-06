@@ -6,6 +6,7 @@ import AlertsScreen from '../screens/AlertsScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
 import TodoScreen from '../screens/TodoScreen';
 import SharedTodoScreen from '../screens/SharedTodoScreen';
+import PomodoroScreen from '../screens/PomodoroScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Schedule" component={ScheduleScreen} options={{ title: 'Full Schedule' }} />
         <Stack.Screen name="Todo" component={TodoScreen} options={{ title: 'Todo List' }} />
         <Stack.Screen name="SharedTodo" component={SharedTodoScreen} options={{ title: 'Shared Todo List' }} />
+        <Stack.Screen name="Pomodoro" component={PomodoroScreen} options={{ title: 'Pomodoro Timer' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

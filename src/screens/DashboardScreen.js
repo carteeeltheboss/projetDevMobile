@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
-import { ScrollView, View, Text, RefreshControl, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { useMemo, useState, useEffect } from 'react';
+import { ScrollView, View, Text, RefreshControl, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PieChart } from 'react-native-chart-kit';
 import CurrentSessionCard from '../components/CurrentSessionCard';
 import SessionCard from '../components/SessionCard';
 import StateMessage from '../components/StateMessage';
@@ -8,6 +10,7 @@ import AlertItem from '../components/AlertItem';
 import { useCachedResource } from '../hooks/useCachedResource';
 import { fetchSchedule, fetchAlerts } from '../services/googleSheetsService';
 import { getCurrentSession, getTodaySchedule } from '../utils/time';
+import { TODO_KEY } from '../storage/storageKeys';
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
@@ -19,6 +22,24 @@ export default function DashboardScreen() {
     error: alertsError,
     refresh: refreshAlerts,
   } = useCachedResource(fetchAlerts, []);
+  const [todoData, setTodoData] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      AsyncStorage.getItem(TODO_KEY).then((stored) => {
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            setTodoData(parsed);
+          } catch (e) {
+            console.warn('Failed to parse todos, using mock', e);
+          }
+        }
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const todaySchedule = useMemo(() => getTodaySchedule(data || []), [data]);
   const currentSession = useMemo(() => getCurrentSession(todaySchedule), [todaySchedule]);
@@ -40,6 +61,28 @@ export default function DashboardScreen() {
     refresh();
     refreshAlerts();
   };
+
+  const { completedTasks, totalTasks } = useMemo(() => {
+    const completed = todoData.filter((item) => item.done).length;
+    return { completedTasks: completed, totalTasks: todoData.length };
+  }, [todoData]);
+
+  const chartData = [
+    {
+      name: 'Completed',
+      population: completedTasks,
+      color: '#a0c4ff',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Remaining',
+      population: totalTasks - completedTasks,
+      color: '#c7b8e6',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+  ];
 
   return (
     <ScrollView
@@ -64,6 +107,12 @@ export default function DashboardScreen() {
           >
             <Text style={[styles.ctaText, styles.ctaTextSecondary, styles.ctaTextCompact]}>Todo</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.cta, styles.ctaSecondary, styles.ctaCompact]}
+            onPress={() => navigation.navigate('Pomodoro')}
+          >
+            <Text style={[styles.ctaText, styles.ctaTextSecondary, styles.ctaTextCompact]}>Pomodoro</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -85,6 +134,29 @@ export default function DashboardScreen() {
           contentContainerStyle={styles.list}
         />
       )}
+
+      <Text style={styles.sectionTitle}>Todo List Progress</Text>
+      <View style={{ alignItems: 'center' }}>
+        <PieChart
+          data={chartData}
+          width={Dimensions.get('window').width - 32}
+          height={180}
+          chartConfig={{
+            backgroundColor: '#1cc910',
+            backgroundGradientFrom: '#eff6ff',
+            backgroundGradientTo: '#efefef',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          absolute
+        />
+      </View>
 
       <Text style={styles.sectionTitle}>Alerts &amp; Messages {alertsSource ? `· ${alertsSource}` : ''}</Text>
       {alertsError ? <StateMessage title="Could not load alerts" message={alertsError.message} /> : null}
