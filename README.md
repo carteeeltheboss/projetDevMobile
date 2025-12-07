@@ -37,7 +37,7 @@
 ---
 
 ## Remerciements
-Merci au **Pr. BE.ELBAGHAZAOUI** pour l'encadrement technique, ainsi qu'au corps professoral de l'EMSI pour la qualité de la formation.  
+Merci au **Pr. Rachik Zineb** pour l'encadrement technique, ainsi qu'au corps professoral de l'EMSI pour la qualité de la formation.  
 Équipe projet : **Karim HANFAOUI** & **Imane KAFIF** (G9).
 
 ---
@@ -54,7 +54,7 @@ Merci au **Pr. BE.ELBAGHAZAOUI** pour l'encadrement technique, ainsi qu'au corps
 ## 🏫 Contexte Académique
 Projet réalisé dans le cadre du module **Développement Mobile** (4ème année IIR, EMSI).
 - **Année Universitaire :** 2024/2025
-- **Encadrant :** Pr. BE.ELBAGHAZAOUI
+- **Encadrant :** Pr. Rachik Zineb
 - **Équipe (Groupe G9) :** 👨‍💻 Karim HANFAOUI — 👩‍💻 Imane KAFIF
 
 <p align="center">
