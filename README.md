@@ -1,101 +1,237 @@
-# MyStudyCompanion (Expo / React Native)
+# MyStudyCompanion 📱🎓
 
-Application mobile pour les étudiants de l'EMSI, conçue pour fonctionner hors ligne. Elle permet de consulter son emploi du temps, de recevoir des alertes et de gérer ses tâches. L'application utilise Google Sheets comme un CMS headless. Elle supporte les liens profonds (deep links), la mise en cache avec AsyncStorage, et (dans les builds de développement) des notifications en arrière-plan pour les cours actuels et les nouvelles alertes.
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
-## Fonctionnalités
-- **Emploi du temps et Alertes** depuis Google Sheets (`opensheet.elk.sh`).
-- **Cache hors ligne** avec AsyncStorage.
-- **Tableau de bord** avec mise en évidence de la session en cours et des cours du jour.
-- **Grille d'emploi du temps** complète 5x4 (Lundi–Vendredi, 4 créneaux).
-- **Section Alertes & Messages** avec des couleurs de priorité (rouge/orange/vert).
-- **Liste de tâches personnelle** (locale, persistante, ajout/modification/suppression, marquer comme fait).
-- **Liste de tâches partagée** (depuis l'onglet `TODO` de la même feuille de calcul Google Sheets).
-- **Pomodoro Timer** pour aider à la concentration.
-- **Graphique de progression** de la liste de tâches sur le tableau de bord.
-- **Liens profonds** (`mystudy://open?screen=Alerts&id=123`).
-- **Notifications en arrière-plan** (uniquement pour les builds de développement, non supporté par Expo Go).
+> Application mobile d'assistance à la productivité et à l'organisation pour les étudiants de l'EMSI (Offline-First, React Native + Expo).
 
-## Structure du projet
+📄 Rapport complet (PDF) : `rapportDEVMOBILE.pdf`
+
+---
+
+## Sommaire
+- [Vue d'ensemble](#vue-densemble)
+- [Remerciements](#remerciements)
+- [Résumé / Abstract](#résumé--abstract)
+- [Contexte académique](#🏫-contexte-académique)
+- [Problématique et solution](#problématique-et-solution)
+- [Fonctionnalités clés](#🚀-fonctionnalités-clés)
+- [Aperçu visuel](#📱-aperçu-visuel)
+- [Architecture et conception](#🛠-architecture-et-conception)
+- [Implémentation](#⚙️-implémentation)
+- [Installation](#💻-installation--démarrage)
+- [Gestion de projet](#📈-gestion-de-projet)
+- [Difficultés techniques](#🧩-difficultés-techniques)
+- [Roadmap / Perspectives](#🔮-roadmap--perspectives)
+- [Références](#📚-références)
+- [Licence](#licence)
+
+---
+
+## Vue d'ensemble
+- App mobile cross-platform (Android/iOS) qui centralise emploi du temps, tâches et minuteur Pomodoro.
+- Fonctionne sans connexion grâce au cache local (`AsyncStorage`) et se synchronise avec Google Sheets.
+- Architecture modulaire (Clean Architecture), navigation par Native Stack, design pensé pour un usage étudiant.
+
+---
+
+## Remerciements
+Merci au **Pr. BE.ELBAGHAZAOUI** pour l'encadrement technique, ainsi qu'au corps professoral de l'EMSI pour la qualité de la formation.  
+Équipe projet : **Karim HANFAOUI** & **Imane KAFIF** (G9).
+
+---
+
+## Résumé / Abstract
+**Résumé (FR)** — Conception d'une application mobile cross-platform dédiée à la productivité étudiante (Pomodoro, To-Do, emploi du temps synchronisé). L'approche **Offline-First** garantit l'accès même sans internet, avec synchronisation légère via Google Sheets.  
+**Mots-clés :** React Native, Expo, Offline-First, AsyncStorage, Google Sheets, Productivité.
+
+**Abstract (EN)** — Cross-platform mobile app to enhance student productivity (Pomodoro timer, task manager, synchronized schedule). Built with React Native + Expo using an Offline-First architecture (local cache with cloud sync).  
+**Keywords:** React Native, Expo, Offline-First, AsyncStorage, Google Sheets, Productivity.
+
+---
+
+## 🏫 Contexte Académique
+Projet réalisé dans le cadre du module **Développement Mobile** (4ème année IIR, EMSI).
+- **Année Universitaire :** 2024/2025
+- **Encadrant :** Pr. BE.ELBAGHAZAOUI
+- **Équipe (Groupe G9) :** 👨‍💻 Karim HANFAOUI — 👩‍💻 Imane KAFIF
+
+<p align="center">
+  <img src="devmobile_rapport_latex/logo.png" width="200" alt="EMSI Logo"/>
+</p>
+
+---
+
+## Problématique et solution
+**Problématique :** Multitude de canaux (WhatsApp, emails, affichages papier) rendant la gestion académique pénible, surtout sans réseau dans les amphithéâtres.  
+**Solution proposée :** Une app unique et offline-first qui :
+- centralise le planning (sync Google Sheets + cache local),
+- sépare tâches personnelles et partagées,
+- intègre un minuteur Pomodoro pour rythmer le travail.
+
+---
+
+## 🚀 Fonctionnalités Clés
+- **Emploi du temps intelligent (Offline) :** récupération dynamique depuis Google Sheets, mise en cache, surbrillance du cours en cours.
+- **Gestion de tâches hybride :** listes personnelles locales + liste "Classe" synchronisée (CRUD complet).
+- **Pomodoro / Focus Mode :** cycles 25/5 minutes pour éviter le burnout.
+
+---
+
+## 📱 Aperçu visuel
+
+| Tableau de Bord | Gestion des Tâches | Focus Mode |
+|:---:|:---:|:---:|
+| <img src="devmobile_rapport_latex/dash1.jpg" width="200" alt="Dashboard"/> | <img src="devmobile_rapport_latex/todo1.jpg" width="200" alt="Todo perso"/> | <img src="devmobile_rapport_latex/pomo.jpg" width="200" alt="Pomodoro"/> |
+| Accès rapide aux modules | Listes personnelles & partagées | Minuteur de concentration |
+
+Autres captures : `devmobile_rapport_latex/dash2.jpg`, `stodo.jpg`, `crudtodo.jpg`.
+
+---
+
+## 🛠 Architecture et conception
+
+### Stack technologique
+- **Frontend :** React Native + Expo (SDK 50+)
+- **Navigation :** React Navigation (Native Stack)
+- **Backend léger :** Google Sheets API via `opensheet.elk.sh`
+- **Persistance locale :** AsyncStorage (clé-valeur)
+
+### Stratégie de données (Offline-First)
+1. Tentative de fetch de l'API Google Sheets.
+2. En cas de succès : mise à jour du cache + affichage.
+3. En cas d'échec : lecture transparente depuis le cache local.
+![Diagramme de séquence](devmobile_rapport_latex/diag2.png)
+
+### UML / Modélisation
+- **Cas d'utilisation :** interactions étudiant / Google Sheets.  
+  ![Use Case](devmobile_rapport_latex/diag3.png)
+- **Architecture modulaire :** séparation vues / composants / services.  
+  ![Diagramme de classes](devmobile_rapport_latex/diag1.png)
+
+### Arborescence du projet
 ```
-App.js
-app.json
-src/
-  background/notificationsTask.js
-  components/...
-  hooks/useCachedResource.js
-  navigation/AppNavigator.js
-  navigation/LinkingConfiguration.js
-  screens/DashboardScreen.js
-  screens/AlertsScreen.js
-  screens/ScheduleScreen.js
-  screens/TodoScreen.js
-  screens/SharedTodoScreen.js
-  screens/PomodoroScreen.js
-  services/googleSheetsService.js
-  storage/storageKeys.js
-  utils/time.js
-assets/
+/projetDevMobile
+|-- assets                  # Images, polices, icônes
+|-- src
+|   |-- components          # UI réutilisables
+|   |-- screens             # Dashboard, Pomodoro, Todo, Schedule...
+|   |-- services            # googleSheetsService.js (API)
+|   |-- navigation          # Stack Navigator
+|-- App.js                  # Point d'entrée
+|-- app.json / package.json # Config Expo & dépendances
 ```
 
-## Configuration de Google Sheets
-Utilisez une feuille de calcul Google Sheets avec trois onglets :
-- `SCHEDULE` avec les en-têtes : `Day | StartTime | EndTime | Module | Professor | Room | Group | Notes`
-- `ALERTS` avec les en-têtes : `Id | Title | Message | Priority | ExpiresAt | CreatedAt | Link`
-  - Priorité : `high` (rouge), `medium` (orange), `low` (vert)
-  - Exemple de lien : `mystudy://open?screen=Alerts&id=1`
-- `TODO` (partagé) avec les en-têtes : `Title | Course | DueAt | Priority | Duration` (Id optionnel)
+---
 
-Partagez la feuille de calcul en mode "Tous les utilisateurs disposant du lien – Lecteur".
+## ⚙️ Implémentation
 
-## Configuration
-Modifiez `src/services/googleSheetsService.js`:
-- `SHEET_ID`: à remplacer par l'ID de votre feuille de calcul Google Sheets (la même pour l'emploi du temps, les alertes et la liste de tâches partagée).
-- Le code utilise `https://opensheet.elk.sh/${SHEET_ID}/<ONGLET>`.
+### Navigation principale (`App.js`)
+```js
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Dashboard from './src/screens/Dashboard';
+import Pomodoro from './src/screens/Pomodoro';
 
-## Scripts
-- Installer les dépendances : `npm install`
-- Démarrer (recommandé) : `npx expo start`
-- Démarrer + vider le cache : `npx expo start --clear`
-- Vérifier la configuration : `npx expo-doctor`
-- Build de développement (pour les notifications/tâches de fond) : `eas build --profile development --platform android` (ou `ios`), puis `npx expo start --dev-client`
+const Stack = createNativeStackNavigator();
 
-## Lancement
-1) `npm install`
-2) Configurez `SHEET_ID` dans `src/services/googleSheetsService.js`
-3) `npx expo start`
-4) Ouvrez sur un appareil/simulateur ; tirez pour rafraîchir sur le tableau de bord pour charger les données et mettre en cache pour une utilisation hors ligne.
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Dashboard">
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Pomodoro" component={Pomodoro} />
+        {/* Autres écrans : Todo, Schedule... */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
 
-## Liens profonds (Deep links)
-- Schéma : `mystudy://`
-- Exemple : `mystudy://open?screen=Alerts&id=1`
-- Tester sur un simulateur :
-  - iOS : `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --ios`
-  - Android : `npx uri-scheme open "mystudy://open?screen=Alerts&id=1" --android`
+### Service de données (Google Sheets)
+```js
+export const fetchSchedule = async () => {
+  try {
+    const response = await fetch('URL_DE_VOTRE_GOOGLE_SHEET');
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error('Erreur API:', error);
+    return null; // déclenche le mode hors ligne
+  }
+};
+```
 
-## Notifications en arrière-plan
-- Implémenté dans `src/background/notificationsTask.js`
-- Interroge l'emploi du temps et les alertes toutes les ~3 minutes (au mieux, contrôlé par l'OS), envoie une notification locale lors d'un changement de cours actuel ou d'un nouvel ID d'alerte.
-- Nécessite l'autorisation de notification et un client de développement/build. **Expo Go ne supporte pas cette fonctionnalité.**
-- Dans Expo Go, l'application affiche un avertissement et ignore l'enregistrement des tâches de fond.
+### Logique du minuteur Pomodoro (extrait)
+```js
+useEffect(() => {
+  let interval = null;
+  if (isActive && seconds > 0) {
+    interval = setInterval(() => setSeconds(seconds - 1), 1000);
+  } else if (seconds === 0) {
+    setIsActive(false);
+    alert('Session terminée !');
+  }
+  return () => clearInterval(interval);
+}, [isActive, seconds]);
+```
 
-## Comportement hors ligne
-- Récupération réseau -> mise en cache dans AsyncStorage.
-- En cas d'échec, charge depuis le cache (emploi du temps, alertes, tâches partagées).
-- Les tâches personnelles sont toujours locales et persistantes.
+---
 
-## Conseils de test & débogage
-- Vérifiez le JSON de la feuille de calcul : `https://opensheet.elk.sh/<SHEET_ID>/SCHEDULE` (ou ALERTS/TODO).
-- Si les listes sont vides, vérifiez les noms des onglets/en-têtes et le partage.
-- Utilisez `npx expo-doctor` pour détecter les problèmes de configuration.
-- Pour réinitialiser le cache, désinstallez l'application ou videz AsyncStorage manuellement.
+## 💻 Installation & Démarrage
+Prérequis : Node.js (v18+), Expo CLI (`npm install -g expo-cli`), app **Expo Go**.
 
-## Déploiement
-- Utilisez EAS pour les builds de production/développement :
-  - Installez EAS : `npm i -g eas-cli`
-  - Configurez `eas.json` (si nécessaire) et lancez `eas build --platform android|ios`
-- Poussez sur Git comme d'habitude ; assurez-vous que `.expo/`, `node_modules/` sont ignorés (déjà dans `.gitignore`).
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/carteeeltheboss/projetDevMobile.git
+   cd projetDevMobile
+   ```
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
+3. **Configurer Google Sheets**
+   - Ouvrir `src/services/googleSheetsService.js`
+   - Remplacer `SHEET_ID` par l'ID de votre Sheet (public)
+   - Onglets requis : `SCHEDULE`, `ALERTS`, `TODO`
+4. **Lancer l'app**
+   ```bash
+   npx expo start
+   ```
+   Scanner le QR Code avec Expo Go.
 
-## Dépannage
-- “Background notifications limited in Expo Go” : construisez un client de développement (`eas build --profile development`) and run with `npx expo start --dev-client`.
-- “Cannot fetch sheet” : vérifiez le partage de la feuille de calcul et les noms des onglets ; confirmez le `SHEET_ID`.
-- “Deep link doesn’t open app” : assurez-vous que le schéma `mystudy` est dans `app.json` et testez via `npx uri-scheme`.
+---
+
+## 📈 Gestion de projet
+- **Méthodologie agile (3 sprints) :** environnement + Dashboard → Pomodoro + Todo locale → API + design final.
+- **Versionning Git :** branches par fonctionnalité, fusion dans `main`.  
+  Dépôt : https://github.com/carteeeltheboss/projetDevMobile  
+  <img src="devmobile_rapport_latex/qrcode.png" width="120" alt="QR GitHub"/>
+
+---
+
+## 🧩 Difficultés techniques
+- **Persistance Todo :** données perdues faute de `JSON.stringify`/`JSON.parse` avec AsyncStorage → corrigé.
+- **Compatibilité Android (ombres) :** ajout de `elevation` pour reproduire le rendu iOS.
+
+---
+
+## 🔮 Roadmap / Perspectives
+- Mode sombre via `Appearance`.
+- Notifications push (Firebase Cloud Messaging) pour les alertes de cours.
+- Authentification étudiante pour données privées.
+- Tests et packaging iOS (au-delà d'Expo Go).
+
+---
+
+## 📚 Références
+- React Native : https://reactnative.dev  
+- Expo : https://docs.expo.dev  
+- React Hooks : https://reactjs.org/docs/hooks-intro.html  
+- AsyncStorage : https://react-native-async-storage.github.io/async-storage/
+
+---
+
+## Licence
+Projet à but éducatif (usage académique).
