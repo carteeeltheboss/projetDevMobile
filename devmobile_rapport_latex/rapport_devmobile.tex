@@ -1,0 +1,450 @@
+\documentclass[a4paper,12pt]{report}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref} 
+\usepackage{float}    
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption} 
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage[most]{tcolorbox}
+
+% --- COLOR DEFINITIONS FOR CODE ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% --- CUSTOM BOXES ---
+\newtcolorbox{block}[1][]{colback=blue!5!white, colframe=blue!75!black, title=#1}
+\newtcolorbox{alertblock}[1][]{colback=red!5!white, colframe=red!75!black, title=#1}
+
+\begin{document}
+
+% --- TITLE PAGE ---
+\begin{titlepage}
+\centering
+{\small Royaume du Maroc}\\
+{\small HONORIS UNITED UNIVERSITIES}\\
+\rule{\linewidth}{0.3mm} \\[0.4cm]
+
+\begin{minipage}{5cm}
+\begin{center}
+\includegraphics[width=5cm]{logo.png} 
+\end{center}
+\end{minipage}\hfill
+\begin{minipage}{10cm}
+\begin{flushright}
+{\small École Marocaine Des Sciences de L'Ingenieur}\\[0.1cm]
+{\small Département Informatique}\\[0.1cm]
+\end{flushright}
+\end{minipage}\hfill\\
+\vspace{20mm}
+{\large \bfseries Rapport du projet de fin de module}\\[0.5cm]
+{\large Développement Mobile avec React Native}\\[0.5cm]
+{\large \bfseries{Option : 4IIR G9} \\ }
+\vspace{10mm}
+\rule{\linewidth}{0.3mm} \\[0.4cm]
+{ \huge \bfseries MyStudyCompanion\\[0.4cm] }
+{ \Large \textit{Application d'assistance à la productivité étudiante} }
+\rule{\linewidth}{0.3mm} \\[1cm]
+\vspace{10mm}
+
+\noindent
+\begin{minipage}{0.5\textwidth}
+\vspace{-7mm}
+\begin{flushleft} \large
+\emph{Réalisé par :}\\
+M. \textsc{HANFAOUI} Karim \\
+Mme. \textsc{KAFIF} Imane \\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Encadré par :}\\
+Pr. Rachik \textsc{Zineb}\\
+\end{flushright}
+\end{minipage}\\[1cm]
+
+\vspace{20mm}
+{\large Année Universitaire : 2025/2026}
+\end{titlepage}
+
+% --- REMERCIEMENTS ---
+\chapter*{Remerciements}
+\thispagestyle{empty}
+\vspace{1cm}
+Nous tenons à exprimer notre profonde gratitude à toutes les personnes qui ont contribué au succès de ce projet.\\[0.5cm]
+
+Nous remercions tout particulièrement notre encadrant, \textbf{Pr. Rachik \textsc{Zineb}\\}, pour ses directives claires concernant l'architecture mobile, sa disponibilité et ses conseils techniques précieux tout au long de ce module. Son expertise nous a permis de surmonter les obstacles techniques liés à l'environnement React Native.\\[0.5cm]
+
+Nos remerciements vont également au corps professoral de l'EMSI pour la qualité de la formation dispensée, ainsi qu'aux membres du jury qui ont accepté d'évaluer ce travail.
+
+\vfill
+\begin{flushright}
+    \textit{L'équipe projet}\\
+    \textit{\today}
+\end{flushright}
+
+% --- RESUME / ABSTRACT ---
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\vspace{0.5cm}
+Ce projet, intitulé \textbf{MyStudyCompanion}, consiste en la conception et la réalisation d'une application mobile cross-platform dédiée à l'amélioration de la productivité des étudiants. L'objectif est de fournir une interface centralisée regroupant des outils essentiels tels qu'un minuteur Pomodoro, une gestion de tâches (To-Do List) et un emploi du temps synchronisé.
+
+La solution a été développée en utilisant le framework \textbf{React Native} avec \textbf{Expo}. L'architecture technique repose sur une approche "Offline-First" : les données sont persistées localement via \textbf{AsyncStorage} pour garantir l'accès sans connexion, tout en étant synchronisées avec une API distante (Google Sheets) pour les mises à jour dynamiques. Le code suit une structure modulaire stricte.
+
+\vspace{1cm}
+\textbf{Mots-clés :} React Native, Expo, Mobile, Android, Offline-First, Productivité.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\vspace{0.5cm}
+This project, titled \textbf{MyStudyCompanion}, focuses on the design and development of a cross-platform mobile application aimed at enhancing student productivity. The goal is to provide a centralized interface combining essential tools such as a Pomodoro timer, a To-Do list manager, and a synchronized schedule viewer.
+
+The solution was built using the \textbf{React Native} framework with \textbf{Expo}. The technical architecture follows an "Offline-First" approach: data is persisted locally via \textbf{AsyncStorage} to ensure accessibility without an internet connection.
+
+\vspace{1cm}
+\textbf{Keywords:} React Native, Expo, Mobile, Android, Offline-First, Productivity.
+
+% --- TABLE OF CONTENTS ---
+\tableofcontents
+\listoffigures
+\newpage
+
+% --- CHAPTER 1: INTRO ---
+\chapter{Introduction Générale}
+
+\section{Contexte du Projet}
+L'essor des technologies mobiles a transformé notre manière d'interagir avec l'information. Dans le milieu académique, et spécifiquement au sein de l'EMSI, les étudiants sont confrontés à une charge de travail dense nécessitant une organisation rigoureuse. La gestion du temps est un défi majeur. La multiplication des supports (agenda papier, applications de notes éparses, groupes WhatsApp pour les annonces) crée une friction qui nuit à la productivité et augmente la charge mentale.
+
+\section{Problématique}
+Les solutions existantes sur le marché sont souvent soit trop complexes (outils de gestion de projet d'entreprise), soit trop simplistes (simples applications de notes). Il manque une solution \textit{adaptée à l'étudiant}, qui centralise :
+\begin{itemize}
+    \item La gestion du temps de concentration (Pomodoro).
+    \item Le suivi des tâches académiques.
+    \item L'accès rapide à l'emploi du temps, même sans connexion internet dans les amphithéâtres.
+\end{itemize}
+
+\section{Solution Proposée}
+\textbf{MyStudyCompanion} est une application mobile développée pour répondre à ce besoin spécifique. Elle propose une architecture robuste permettant une utilisation fluide en mode déconnecté, une synchronisation légère avec le Cloud pour les données partagées (emploi du temps), et une interface utilisateur intuitive respectant les standards du Material Design.
+
+\chapter{Analyse et Conception}
+
+\section{Spécification des Besoins}
+Avant d'entamer le développement, nous avons identifié les besoins fonctionnels via des User Stories.
+
+\begin{longtable}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{Acteur} & \textbf{Description du besoin} & \textbf{Priorité} \\
+\hline
+Étudiant & En tant qu'étudiant, je veux visualiser mon emploi du temps pour savoir où est mon prochain cours. & Haute \\
+\hline
+Étudiant & En tant qu'étudiant, je veux lancer un minuteur de 25 minutes pour me concentrer. & Haute \\
+\hline
+Étudiant & En tant qu'étudiant, je veux ajouter des tâches personnelles pour ne rien oublier. & Moyenne \\
+\hline
+Étudiant & En tant qu'étudiant, je veux consulter mes données même sans 4G/Wifi. & Haute \\
+\hline
+\end{longtable}
+
+\section{Modélisation UML}
+Pour assurer une architecture cohérente, nous avons réalisé les diagrammes suivants avant le codage.
+\newpage
+\subsection{Diagramme de Cas d'Utilisation}
+Ce diagramme illustre les fonctionnalités offertes par MyStudyCompanion aux étudiants, ainsi que l'interaction avec le système externe Google Sheets.
+\begin{figure}[H]
+    \centering
+    % Diagramme Use Case: diag3.png
+    \includegraphics[width=0.9\textwidth]{diag3.png}
+    \caption{Diagramme de Cas d'Utilisation}
+\end{figure}
+\newpage
+\subsection{Diagramme de Séquence (Synchronisation)}
+Le diagramme suivant détaille le mécanisme de synchronisation "Offline-First". Il montre comment l'application privilégie les données fraîches de l'API mais bascule automatiquement sur le cache local (\texttt{AsyncStorage}) en cas d'erreur réseau.
+\begin{figure}[H]
+    \centering
+    % Diagramme Sequence: diag2.png
+    \includegraphics[width=0.9\textwidth]{diag2.png}
+    \caption{Diagramme de Séquence : Récupération des données}
+\end{figure}
+\newpage
+\subsection{Diagramme de Classes}
+Ce diagramme présente l'organisation modulaire du code source, séparant clairement les Vues (Screens), les Composants UI et la logique métier (Services).
+\begin{figure}[H]
+    \centering
+    % Diagramme Classes: diag1.png
+    \includegraphics[width=0.9\textwidth]{diag1.png}
+    \caption{Diagramme de Classes Simplifié}
+\end{figure}
+
+% --- CHAPTER 3: TECH ---
+\chapter{État de l'Art et Choix Technologiques}
+
+\section{Framework : React Native}
+React Native est un framework open-source créé par Meta (Facebook). Contrairement aux applications "hybrides" classiques (Cordova, Ionic) qui utilisent une WebView pour rendre du HTML, React Native invoque les composants natifs de l'OS (Android/iOS).
+
+\subsection{Pourquoi React Native ?}
+\begin{itemize}
+    \item \textbf{Performance :} Grâce au "Bridge", le code JavaScript contrôle des vues natives, offrant une fluidité (60fps) bien supérieure aux WebViews.
+    \item \textbf{Cross-Platform :} Une seule base de code (JavaScript/JSX) permet de générer des binaires pour Android (.apk) et iOS (.ipa).
+    \item \textbf{Écosystème :} La communauté est immense, offrant des bibliothèques pour presque tous les besoins (Navigation, Stockage, Caméra).
+\end{itemize}
+
+\section{L'Écosystème Expo}
+Nous avons choisi d'utiliser \textbf{Expo} pour ce projet. Expo est une surcouche à React Native qui simplifie considérablement le développement.
+\begin{itemize}
+    \item \textbf{Expo Go :} Permet de tester l'application en temps réel sur notre appareil physique via un QR Code, sans avoir à compiler l'application à chaque modification.
+    \item \textbf{EAS Build :} Service cloud qui permet de compiler l'application finale sans avoir besoin d'un environnement Android Studio ou Xcode complexe en local.
+\end{itemize}
+
+\section{Gestion des Données}
+\subsection{Persistance Locale : AsyncStorage}
+Pour répondre à l'exigence "Offline-First", nous utilisons \texttt{AsyncStorage}. C'est un système de stockage clé-valeur asynchrone, persistant et global pour l'application. C'est l'équivalent du \texttt{localStorage} sur le web, mais optimisé pour le mobile.
+
+\subsection{Backend : Google Sheets API}
+Plutôt que de développer un backend lourd pour un emploi du temps statique, nous avons utilisé Google Sheets comme CMS (Content Management System).
+\begin{itemize}
+    \item L'administration met à jour le fichier Excel/Sheet.
+    \item L'application mobile "fetch" ce fichier au format JSON.
+    \item Cette approche réduit les coûts d'hébergement et simplifie la maintenance.
+\end{itemize}
+
+% --- CHAPTER 4: IMPLEMENTATION ---
+\chapter{Architecture et Implémentation}
+
+\section{Structure du Projet}
+Une bonne organisation du code est cruciale pour la maintenabilité. Nous avons adopté l'architecture suivante :
+
+\begin{block}[Arborescence des Fichiers]
+\begin{verbatim}
+/projetDevMobile
+|-- /assets             # Images, polices et icônes
+|-- /src
+|   |-- /components     # Boutons, Cartes, Headers (Réutilisables)
+|   |-- /screens        # Les pages complètes (Vues)
+|   |   |-- Dashboard.js
+|   |   |-- Pomodoro.js
+|   |   |-- TodoScreen.js
+|   |   |-- SharedTodoScreen.js
+|   |   |-- ScheduleScreen.js
+|   |-- /services       # Logique métier et API
+|   |   |-- googleSheetsService.js
+|   |-- /navigation     # Configuration du Stack Navigator
+|-- App.js              # Point d'entrée de l'application
+|-- package.json        # Dépendances (npm)
+|-- app.json            # Configuration Expo (Nom, Version, Slug)
+\end{verbatim}
+\end{block}
+
+\section{Implémentation de la Navigation}
+Nous utilisons \texttt{@react-navigation/native-stack}. Voici comment nous avons configuré les routes principales dans \texttt{App.js}.
+
+\begin{lstlisting}[language=JavaScript, caption=Configuration de la Navigation (App.js)]
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Dashboard from './src/screens/Dashboard';
+import Pomodoro from './src/screens/Pomodoro';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Dashboard">
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Pomodoro" component={Pomodoro} />
+        {/* Autres écrans ici */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+\end{lstlisting}
+
+\section{Le Service de Données (API)}
+Le fichier \texttt{googleSheetsService.js} est responsable de la communication avec l'extérieur. Il transforme les données brutes CSV/JSON en objets JavaScript exploitables par l'application.
+
+\begin{lstlisting}[language=JavaScript, caption=Service de récupération des données]
+export const fetchSchedule = async () => {
+  try {
+    const response = await fetch('URL_DE_VOTRE_GOOGLE_SHEET');
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Erreur API:", error);
+    return null; // Retourne null pour déclencher le mode hors ligne
+  }
+};
+\end{lstlisting}
+
+\section{Gestion du Minuteur Pomodoro}
+L'écran Pomodoro utilise le Hook \texttt{useState} et \texttt{useEffect} pour gérer le décompte des secondes. La difficulté principale était de s'assurer que le minuteur s'arrête correctement si l'utilisateur quitte l'écran.
+
+\begin{lstlisting}[language=JavaScript, caption=Logique du Timer (Extrait)]
+useEffect(() => {
+  let interval = null;
+  if (isActive && seconds > 0) {
+    interval = setInterval(() => {
+      setSeconds(seconds - 1);
+    }, 1000);
+  } else if (seconds === 0) {
+    setIsActive(false);
+    alert("Session terminée !");
+  }
+  return () => clearInterval(interval); // Nettoyage
+}, [isActive, seconds]);
+\end{lstlisting}
+
+% --- CHAPTER 5: INTERFACES (SCREENSHOTS) ---
+\chapter{Présentation des Interfaces}
+Cette section illustre les résultats visuels du développement sur un appareil Android physique.
+
+\section{Tableau de Bord (Dashboard)}
+Le Dashboard est le point d'entrée central. Il permet une navigation intuitive vers les différents modules.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        % dash1.jpg
+        \includegraphics[width=\textwidth]{dash1.jpg} 
+        \caption{Dashboard - Vue Principale}
+        \label{fig:dash1}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        % dash2.jpg
+        \includegraphics[width=\textwidth]{dash2.jpg} 
+        \caption{Dashboard - Vue Menu}
+        \label{fig:dash2}
+    \end{minipage}
+\end{figure}
+
+\section{Gestion des Tâches (Task Management)}
+L'application propose une gestion avancée des tâches, séparant les tâches personnelles (stockées localement) des tâches partagées (synchronisées).
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        % todo1.jpg
+        \includegraphics[width=\textwidth]{todo1.jpg}
+        \caption{Liste Personnelle}
+        \label{fig:todo}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        % stodo.jpg
+        \includegraphics[width=\textwidth]{stodo.jpg}
+        \caption{Liste Partagée}
+        \label{fig:shared}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.3\textwidth}
+        \centering
+        % crudtodo.jpg
+        \includegraphics[width=\textwidth]{crudtodo.jpg}
+        \caption{CRUD (Édition)}
+        \label{fig:crud}
+    \end{minipage}
+    \caption*{Figure \ref{fig:todo}-\ref{fig:crud} : Workflow complet de gestion des tâches}
+\end{figure}
+
+\section{Le Minuteur Pomodoro}
+L'interface de concentration (Focus) est épurée pour éviter les distractions.
+
+\begin{figure}[H]
+    \centering
+    % pomo.jpg
+    \includegraphics[width=0.45\textwidth]{pomo.jpg}
+    \caption{Session de Concentration active}
+    \label{fig:pomodoro}
+\end{figure}
+
+\chapter{Gestion de Projet et Difficultés}
+
+\section{Méthodologie Agile}
+Nous avons travaillé en mode itératif.
+\begin{itemize}
+    \item \textbf{Sprint 1 :} Mise en place de l'environnement Expo et création du "Hello World" (Dashboard).
+    \item \textbf{Sprint 2 :} Développement de la logique Pomodoro et Todo List locale.
+    \item \textbf{Sprint 3 :} Intégration de l'API et finalisation du Design.
+\end{itemize}
+
+\section{Versionning avec Git}
+L'utilisation de Git a été centrale. Chaque fonctionnalité a été développée sur une branche dédiée avant d'être fusionnée (\textit{merge}) sur la branche principale \texttt{main}.
+
+\begin{block}[Dépôt GitHub]
+\begin{minipage}{0.65\textwidth}
+    Le code source complet est disponible ici :
+    \vspace{0.3cm}
+    \textbf{\url{https://github.com/carteeeltheboss/projetDevMobile.git}}
+\end{minipage}
+\hfill
+\begin{minipage}{0.3\textwidth}
+    \centering
+    % qrcode.png
+    \includegraphics[width=3cm]{qrcode.png}
+    \captionof*{figure}{\small Accès au Code}
+\end{minipage}
+\end{block}
+
+\section{Difficultés Techniques Rencontrées}
+\subsection{Problème de Cache}
+\textbf{Problème :} Lors des premiers tests, les données de la Todo List disparaissaient au redémarrage de l'application.
+\textbf{Solution :} Nous avons mal implémenté \texttt{AsyncStorage.setItem} qui attend une chaîne de caractères (String). Nous avons dû utiliser \texttt{JSON.stringify()} pour sauvegarder les objets et \texttt{JSON.parse()} pour les lire.
+
+\subsection{Compatibilité Android}
+Certains composants d'interface (comme les ombres \texttt{shadow}) s'affichaient bien sur iOS (simulateur) mais pas sur Android. Nous avons dû utiliser la propriété \texttt{elevation} spécifique à Android pour corriger ce défaut visuel.
+
+\chapter{Conclusion et Perspectives}
+
+Ce projet de fin de module nous a permis de consolider nos acquis en développement mobile. Nous avons réussi à livrer une application \textbf{MyStudyCompanion} fonctionnelle, répondant aux exigences de l'EMSI : 6 écrans, connexion API, stockage local et documentation complète.
+
+Les perspectives d'évolution sont nombreuses :
+\begin{itemize}
+    \item \textbf{Mode Sombre (Dark Mode) :} Utilisation de l'API \texttt{Appearance} de React Native.
+    \item \textbf{Notifications Push :} Intégration de Firebase pour prévenir l'étudiant 10 minutes avant un cours.
+    \item \textbf{Version iOS :} Test et déploiement sur l'Apple Store (actuellement testé via Expo Go).
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{rn} Documentation officielle React Native, \url{https://reactnative.dev}
+\bibitem{expo} Documentation Expo, \url{https://docs.expo.dev}
+\bibitem{hooks} React Hooks Documentation, \url{https://reactjs.org/docs/hooks-intro.html}
+\bibitem{async} AsyncStorage Docs, \url{https://react-native-async-storage.github.io/async-storage/}
+\end{thebibliography}
+
+\end{document}
