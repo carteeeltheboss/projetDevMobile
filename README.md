@@ -1,5 +1,9 @@
 # MyStudyCompanion 📱🎓
 
+<p align="center">
+  <img src="assets/icon.png" width="120" alt="MyStudyCompanion Logo"/>
+</p>
+
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Expo](https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
